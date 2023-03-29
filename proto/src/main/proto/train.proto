@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.ruoyi.platform.grpc";
+option java_outer_classname = "TrainProto";
+option objc_class_prefix = "HLW";
+
+package proto;
+
+service Train {
+  rpc GetStep (StepRequest) returns (StepResponse);
+  rpc GetWloss (WlossRequest) returns (WlossResponse);
+  rpc GetTeacheracc (TeacheraccRequest) returns (TeacheraccResponse);
+}
+
+message WlossRequest{
+  int32 id = 1;
+}
+message StepRequest{
+  int32 id = 1;
+}
+message TeacheraccRequest{
+  int32 id = 1;
+}
+
+message StepResponse {
+  repeated int32 step = 1;
+}
+
+message WlossResponse {
+  repeated int32 step = 1;
+  repeated double wloss = 2;
+}
+
+message TeacheraccResponse {
+  repeated int32 step = 1;
+  repeated double maxacc = 2;
+  repeated double minacc = 3;
+}

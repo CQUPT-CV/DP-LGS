@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.platform.mapper.FashionmnistMapper">
+
+    <resultMap type="Fashionmnist" id="FashionmnistResult">
+        <result property="id"    column="id"    />
+        <result property="label"    column="label"    />
+        <result property="imagedata"    column="imagedata"    />
+    </resultMap>
+
+    <sql id="selectFashionmnistVo">
+        select id, label, imagedata from fashionmnist
+    </sql>
+
+    <select id="selectFashionmnistList" parameterType="Fashionmnist" resultMap="FashionmnistResult">
+        <include refid="selectFashionmnistVo"/>
+        <where>
+            <if test="label != null "> and label = #{label}</if>
+            <if test="imagedata != null  and imagedata != ''"> and imagedata = #{imagedata}</if>
+        </where>
+    </select>
+
+    <select id="selectFashionmnistById" parameterType="Long" resultMap="FashionmnistResult">
+        <include refid="selectFashionmnistVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertFashionmnist" parameterType="Fashionmnist" useGeneratedKeys="true" keyProperty="id">
+        insert into fashionmnist
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="label != null">label,</if>
+            <if test="imagedata != null">imagedata,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="label != null">#{label},</if>
+            <if test="imagedata != null">#{imagedata},</if>
+        </trim>
+    </insert>
+
+    <update id="updateFashionmnist" parameterType="Fashionmnist">
+        update fashionmnist
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="label != null">label = #{label},</if>
+            <if test="imagedata != null">imagedata = #{imagedata},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFashionmnistById" parameterType="Long">
+        delete from fashionmnist where id = #{id}
+    </delete>
+
+    <delete id="deleteFashionmnistByIds" parameterType="String">
+        delete from fashionmnist where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

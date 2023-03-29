@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('PP-LDG')" />
+    <style>
+        .head_black{
+            background: #ccc;
+            font-size: 20px;
+            color: #424141;
+            text-align: center;
+        }
+
+        .ibox{
+            margin-bottom: 0px;
+        }
+    </style>
+</head>
+<body class="gray-bg">
+<div class="container-div col-sm-4">
+    <div class="row">
+        <div class="col-sm-4 search-collapse head_black" align="center">
+            Owner
+        </div>
+        <div class="col-sm-4 search-collapse">
+            <form id="formId">
+                <div class="select-list">
+                    <ul>
+                        <li>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">ip：</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="" style="width: 100px" class="form-control"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">port：</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="" style="width: 100px" class="form-control"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">
+                                        <math xmlns='http://www.w3.org/1998/Math/MathML'> <msub> <mrow> <mi> &#x03B5; <!-- greek small letter epsilon --> </mi> </mrow> <mrow> <mn> 1 </mn> </mrow> </msub> </math>：
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="" style="width: 100px" class="form-control"  placeholder="10.0"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">
+                                        <math xmlns='http://www.w3.org/1998/Math/MathML'>
+                                            <msub>
+                                                <mrow>
+                                                    <mi> &#x03B4; <!-- greek small letter delta --> </mi>
+                                                </mrow>
+                                                <mrow>
+                                                    <mn> 1 </mn>
+                                                </mrow>
+                                            </msub>
+                                        </math>
+                                        ：
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="" style="width: 100px" class="form-control" placeholder="1e-5"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">
+                                        <math xmlns='http://www.w3.org/1998/Math/MathML'> <msub> <mrow> <mi> &#x03B5; <!-- greek small letter epsilon --> </mi> </mrow> <mrow> <mn> 2 </mn> </mrow> </msub> </math>：
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="" style="width: 100px" class="form-control" placeholder="10.0"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">
+                                        <math xmlns='http://www.w3.org/1998/Math/MathML'>
+                                            <msub>
+                                                <mrow>
+                                                    <mi> &#x03B4; <!-- greek small letter delta --> </mi>
+                                                </mrow>
+                                                <mrow>
+                                                    <mn> 2 </mn>
+                                                </mrow>
+                                            </msub>
+                                        </math>
+                                        ：
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="" style="width: 100px" class="form-control" placeholder="1e-5"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <label class="col-sm-6 control-label">database：</label>
+                            <div class="col-sm-8">
+                                <input type="text" name="" style="width: 100px" class="form-control"/>
+                            </div>
+                        </li>
+                        <li>
+                            <a class="btn btn-primary btn-rounded btn-sm" onclick="query()"><i class="fa fa-search"></i>&nbsp;load</a>
+                            <a class="btn btn-warning btn-rounded btn-sm" onclick="$.table.destroy()"><i class="fa fa-refresh"></i>&nbsp;reset</a>
+                            <a class="btn btn-success btn-rounded btn-sm" onclick="dosubmit()"  id="button-msgReload"><i class="glyphicon glyphicon-ok"></i>&nbsp;submit</a>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+
+        <div class="btn-group-sm" id="toolbar" role="group">
+            <a class="btn btn-success" onclick="$.operate.add()">
+                <i class="fa fa-plus"></i> add
+            </a>
+            <a class="btn btn-primary single disabled" onclick="$.operate.edit()">
+                <i class="fa fa-edit"></i> edit
+            </a>
+            <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()">
+                <i class="fa fa-remove"></i> delete
+            </a>
+            <a class="btn btn-warning" onclick="$.table.exportExcel()">
+                <i class="fa fa-download"></i> export
+            </a>
+        </div>
+        <div class="col-sm-4 select-table table-striped">
+            <table id="bootstrap-table"></table>
+        </div>
+    </div>
+</div>
+<div class="container-div col-sm-4">
+    <div class="row">
+        <div class="col-sm-4 search-collapse head_black" align="center">
+            Publisher
+        </div>
+        <div class="col-sm-2 search-collapse">
+            <form id="formId1">
+                <div class="select-list">
+                    <ul>
+                        <li>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">database：</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" name="database" style="width: 100px" class="form-control"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">steps：</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="steps" id="maxstep" style="width: 100px" class="form-control"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">lr：</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" name="lr" style="width: 100px" class="form-control"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">batchsize：</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="batchsize" style="width: 100px" class="form-control"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">subsets：</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" name="subsets" style="width: 100px" class="form-control"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">sigma：</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="sigma" style="width: 100px" class="form-control"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">
+                                        <math xmlns='http://www.w3.org/1998/Math/MathML'>
+                                            <msub>
+                                                <mrow>
+                                                    <mi> &#x03B5; <!-- greek small letter epsilon --> </mi>
+                                                </mrow>
+                                                <mrow>
+                                                    <mn> 1 </mn>
+                                                </mrow>
+                                            </msub>
+                                            <mo> / </mo>
+                                            <msub>
+                                                <mrow>
+                                                    <mi> &#x03B4; <!-- greek small letter delta --> </mi>
+                                                </mrow>
+                                                <mrow>
+                                                    <mn> 1 </mn>
+                                                </mrow>
+                                            </msub>
+                                            <msub>
+                                                <mrow>
+                                                    <mn> : </mn>
+                                                </mrow>
+                                            </msub>
+                                        </math>
+                                    </label>
+                                    <div class="col-sm-7">
+                                        <input type="text" name="epsilon1" style="width: 100px" class="form-control" placeholder="10.0/1e-5" disabled="disabled"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">
+                                        <math xmlns='http://www.w3.org/1998/Math/MathML'>
+                                            <msub>
+                                                <mrow>
+                                                    <mi> &#x03B5; <!-- greek small letter epsilon --> </mi>
+                                                </mrow>
+                                                <mrow>
+                                                    <mn> 2 </mn>
+                                                </mrow>
+                                            </msub>
+                                            <mo> / </mo>
+                                            <msub>
+                                                <mrow>
+                                                    <mi> &#x03B4; <!-- greek small letter delta --> </mi>
+                                                </mrow>
+                                                <mrow>
+                                                    <mn> 2 </mn>
+                                                </mrow>
+                                            </msub>
+                                            <msub>
+                                                <mrow>
+                                                    <mn> : </mn>
+                                                </mrow>
+                                            </msub>
+                                        </math>
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="epsilon2" style="width: 100px" class="form-control" placeholder="10.0/1e-5" disabled="disabled"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <a class="btn btn-success btn-rounded btn-sm" onclick="query_syn_2()"><i class="glyphicon glyphicon-play-circle"></i>&nbsp;train</a>
+                            <a class="btn btn-danger btn-rounded btn-sm" onclick="reset_2()"><i class="glyphicon glyphicon-remove"></i>&nbsp;pause</a>
+                            <a class="btn btn-primary btn-rounded btn-sm" onclick="sendmodel()"><i class="glyphicon glyphicon-upload"></i>&nbsp;publish</a>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-sm-4 select-table table-striped">
+            <div id="bootstrap-table1" style="display: none">
+                <table>
+                    <h5>processing</h5>
+                    <div class="progress progress-striped active">
+                        <div class="progress-bar" id= "progressbar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;color:#000000">
+                            0%
+                        </div>
+                    </div>
+                    <div style="align-items: center">
+                        <div style="width: 500px;height: 300px" id="w_loss" class="center"></div>
+                        <div style="width: 500px;height: 300px" id="teachers" class="center"></div>
+                    </div>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-div col-sm-4">
+    <div class="row">
+        <div class="col-sm-4 search-collapse head_black" align="center">
+            Demander
+        </div>
+        <div class="col-sm-4 search-collapse">
+            <form id="formId2">
+                <div class="select-list">
+                    <ul>
+                        <li>
+                            <label>database：</label>
+                            <input type="text" name="database"/>
+                        </li>
+                        <li>
+                            <div class="form-group">
+                                <label>version：</label>
+                                <select class="form-control">
+                                    <option value="">--version--</option>
+                                    <option value="version1">version1</option>
+                                    <option value="version2">version2</option>
+                                    <option value="version3">version3</option>
+                                </select>
+                            </div>
+                        </li>
+                        <li>
+                            <a class="btn btn-primary btn-rounded btn-sm" onclick="query_syn_3()"><i class="fa fa-search"></i>&nbsp;load</a>
+                            <a class="btn btn-warning btn-rounded btn-sm" onclick="reset_3()"><i class="fa fa-refresh"></i>&nbsp;reset</a>
+                            <a class="btn btn-success btn-rounded btn-sm" onclick=""><i class="fa fa-download"></i>&nbsp;download</a>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+        <!--             "T-shirt", "Trouser", "Pullover", "Dress", "Coat", "Sandal", "Shirt", "Sneaker", "Bag", "Ankle boot"-->
+        <div class="col-sm-4 select-table table-striped">
+            <table id="bootstrap-table2">
+                <div class="col-sm-12" id="cards" style="display: none">
+                    <div class="ibox">
+                        <div class="ibox-title">
+                            <h5>T-shirt</h5>
+                        </div>
+                        <div class="ibox-content" style="display: flex;justify-content: space-between;align-items: center">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/0/00000.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/0/00010.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/0/00020.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/0/00030.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/0/00040.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/0/00050.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/0/00060.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/0/00070.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/0/00080.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/0/00090.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/0/00100.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/0/00110.png">
+                        </div>
+                    </div>
+                    <div class="ibox">
+                        <div class="ibox-title">
+                            <h5>Trouser</h5>
+                        </div>
+                        <div class="ibox-content" style="display: flex;justify-content: space-between;align-items: center">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/1/00001.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/1/00011.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/1/00021.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/1/00031.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/1/00041.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/1/00051.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/1/00061.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/1/00071.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/1/00081.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/1/00091.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/1/00101.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/1/00111.png">
+                        </div>
+                    </div>
+                    <div class="ibox">
+                        <div class="ibox-title">
+                            <h5>Pullover</h5>
+                        </div>
+                        <div class="ibox-content" style="display: flex;justify-content: space-between;align-items: center">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/2/00002.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/2/00012.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/2/00022.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/2/00032.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/2/00042.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/2/00052.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/2/00062.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/2/00072.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/2/00082.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/2/00092.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/2/00102.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/2/00112.png">
+                        </div>
+                    </div>
+                    <div class="ibox">
+                        <div class="ibox-title">
+                            <h5>Dress</h5>
+                        </div>
+                        <div class="ibox-content" style="display: flex;justify-content: space-between;align-items: center">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/3/00003.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/3/00013.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/3/00023.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/3/00033.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/3/00043.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/3/00053.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/3/00063.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/3/00073.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/3/00083.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/3/00093.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/3/00103.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/3/00113.png">
+                        </div>
+                    </div>
+                    <div class="ibox">
+                        <div class="ibox-title">
+                            <h5>Coat</h5>
+                        </div>
+                        <div class="ibox-content" style="display: flex;justify-content: space-between;align-items: center">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/4/00004.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/4/00014.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/4/00024.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/4/00034.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/4/00044.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/4/00054.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/4/00064.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/4/00074.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/4/00084.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/4/00094.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/4/00104.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/4/00114.png">
+                        </div>
+                    </div>
+                    <div class="ibox">
+                        <div class="ibox-title">
+                            <h5>Sandal</h5>
+                        </div>
+                        <div class="ibox-content" style="display: flex;justify-content: space-between;align-items: center">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/5/00005.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/5/00015.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/5/00025.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/5/00035.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/5/00045.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/5/00055.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/5/00065.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/5/00075.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/5/00085.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/5/00095.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/5/00105.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/5/00115.png">
+                        </div>
+                    </div>
+                    <div class="ibox">
+                        <div class="ibox-title">
+                            <h5>Shirt</h5>
+                        </div>
+                        <div class="ibox-content" style="display: flex;justify-content: space-between;align-items: center">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/6/00006.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/6/00016.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/6/00026.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/6/00036.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/6/00046.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/6/00056.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/6/00066.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/6/00076.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/6/00086.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/6/00096.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/6/00106.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/6/00116.png">
+                        </div>
+                    </div>
+                    <div class="ibox">
+                        <div class="ibox-title">
+                            <h5>Sneaker</h5>
+                        </div>
+                        <div class="ibox-content" style="display: flex;justify-content: space-between;align-items: center">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/7/00007.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/7/00017.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/7/00027.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/7/00037.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/7/00047.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/7/00057.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/7/00067.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/7/00077.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/7/00087.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/7/00097.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/7/00107.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/7/00117.png">
+                        </div>
+                    </div>
+                    <div class="ibox">
+                        <div class="ibox-title">
+                            <h5>Bag</h5>
+                        </div>
+                        <div class="ibox-content" style="display: flex;justify-content: space-between;align-items: center">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/8/00008.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/8/00018.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/8/00028.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/8/00038.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/8/00048.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/8/00058.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/8/00068.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/8/00078.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/8/00088.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/8/00098.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/8/00108.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/8/00118.png">
+                        </div>
+                    </div>
+                    <div class="ibox">
+                        <div class="ibox-title">
+                            <h5>Ankle boot</h5>
+                        </div>
+                        <div class="ibox-content" style="display: flex;justify-content: space-between;align-items: center">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/9/00009.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/9/00019.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/9/00029.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/9/00039.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/9/00049.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/9/00059.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/9/00069.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/9/00079.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/9/00089.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/9/00099.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/9/00109.png">
+                            <img class="img-container img-xs" data-height="auto" data-width="auto" data-target="self" src="img/9/00119.png">
+                        </div>
+                    </div>
+                </div>
+            </table>
+        </div>
+    </div>
+</div>
+<th:block th:include="include :: footer" />
+<th:block th:include="include :: echarts-js" />
+<script th:inline="javascript">
+    var editFlag = 'True';
+    var removeFlag = 'True';
+    var prefix = ctx + "platform/upload";
+    var photoUrl = "http://localhost:8000/";
+    function query() {
+        var options = {
+            url: prefix + "/list",
+            createUrl: prefix + "/add",
+            updateUrl: prefix + "/edit/{id}",
+            removeUrl: prefix + "/remove",
+            exportUrl: prefix + "/export",
+            modalName: "upload",
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field: 'id',
+                    title: 'id'
+                },
+                {
+                    field: 'label',
+                    title: 'label'
+                },
+                {
+                    field: 'imagedata',
+                    title: 'base64',
+                    formatter: function(value, row, index) {
+                        return $.table.tooltip(value);
+                    }
+                },
+
+                {
+                    title: 'photo',
+                    formatter: function (value, row, index) {
+                        // return $.table.imageView(photoUrl + row.url);
+                        return $.table.imageView(row.imagedata);
+                    }
+                },
+                {
+                    title: 'action',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>edit</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>remove</a>');
+                        return actions.join('');
+                    }
+                }]
+        };
+        $.table.init(options);
+    };
+    var global_start = 0
+    function timer() {
+        var ttt = setInterval(function () {
+            if(global_start === 1){
+                step_now(global_start);
+                func_wloss();
+                teacheracc();
+                // global_start = 0
+            }
+            else{
+               clearInterval(ttt)
+            }
+        }, 1000)
+    }
+
+    function query_syn_2(){
+        global_start = 1
+        var t = document.getElementById('bootstrap-table1');
+        t.style.display = 'block';
+        timer();
+    }
+
+    function query_syn_3() {
+        var t = document.getElementById('cards');
+        t.style.display = 'block';
+    }
+
+    function reset_2(){
+        var t = document.getElementById('bootstrap-table1');
+        t.style.display = 'none';
+        global_start = 0
+    }
+    function reset_3(){
+        var t = document.getElementById('cards');
+        t.style.display = 'none';
+    }
+
+    function sendmodel(){
+        $.modal.loading("Please wait……");
+        setTimeout(function (){
+            $.modal.closeLoading();
+            $.modal.alert("Publish success", modal_status.SUCCESS);
+        }, 5000)
+    }
+
+    function dosubmit() {
+        $.modal.loading("Please wait……");
+        setTimeout(function (){
+            $.modal.closeLoading();
+            $.modal.alert("Send success", modal_status.SUCCESS);
+        }, 5000)
+    }
+
+    function step_now(){
+        $.get('http://127.0.0.1/platform/train/step', {"maxstep": $("#maxstep").val(), "global_start": global_start}, function (data) {
+            var steps_now = data;
+            console.log(data)
+            var p = document.getElementById('progressbar');
+            p.innerText = steps_now+"%";
+            p.ariaValueNow = steps_now;
+            p.style.width = steps_now+"%";
+        })
+    }
+
+    var mCharts = echarts.init(document.getElementById("teachers"))
+    var yDataArr_teacheracc = []
+    var xDataArr_teacheracc_max = []
+    var xDataArr_teacheracc_min = []
+    function teacheracc(){
+        $.get('http://127.0.0.1/platform/train/teacheracc', function (data) {
+            data0 = data['steps'];
+            for(let i = 0;i<data0.length;i++){
+                data0[i] += xDataArr_teacheracc_max.length;
+            }
+            datamax = data['maxacc'];
+            datamin = data['minacc'];
+            console.log(xDataArr_teacheracc_max)
+            xDataArr_teacheracc_max = [...xDataArr_teacheracc_max, ...datamax];
+            xDataArr_teacheracc_min = [...xDataArr_teacheracc_min, ...datamin];
+            yDataArr_teacheracc= [...yDataArr_teacheracc, ...data0];
+
+            mCharts.setOption(option = {
+                xAxis:{
+                    name:'steps',
+                    type:'category',
+                    data:yDataArr_teacheracc
+                },
+                yAxis:{
+                    // name:'teacher acc',
+                    type:'value'
+                },
+                title: {
+                    text: 'teacher acc'
+                },
+                grid: {
+                    left: '15%',
+                    right: '15%',
+                    // bottom: '10%'
+                },
+                legend: {
+                    data: ['max acc', 'min acc'],
+                    x: 'right',
+                    y: 'top',
+                },
+                series:[
+                    {
+                        data: xDataArr_teacheracc_max,
+                        type: 'line',
+                        name: 'max acc',
+                        // stack: 'x'
+                    },
+                    {
+                        data: xDataArr_teacheracc_min,
+                        type: 'line',
+                        name: 'min acc',
+                        // stack: 'x'
+                    }
+                ],
+            });
+        })
+    }
+
+    var mCharts1 = echarts.init(document.getElementById("w_loss"))
+
+    var xDataArr_wloss = []
+    var yDataArr_wloss = []
+    function func_wloss(){
+        $.get('http://127.0.0.1/platform/train/wloss', function (data) {
+            data0 = data['step'];
+            for(let i = 0;i<data0.length;i++){
+                data0[i] += yDataArr_wloss.length
+            }
+            data1 = data['wloss'];
+            xDataArr_wloss = [...xDataArr_wloss, ...data1]
+            yDataArr_wloss= [...yDataArr_wloss, ...data0]
+
+            mCharts1.setOption(
+                (option = {
+                    title: {
+                        text: 'W Loss',
+                        left: '1%'
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    grid: {
+                        left: '15%',
+                        right: '15%',
+                        // bottom: '10%'
+                    },
+                    xAxis: {
+                        data: yDataArr_wloss
+                    },
+                    yAxis: {},
+                    toolbox: {
+                        right: 10,
+                        feature: {
+                            dataZoom: {
+                                yAxisIndex: 'none'
+                            },
+                            restore: {},
+                            saveAsImage: {}
+                        }
+                    },
+                    dataZoom: [
+                        {
+                            startValue: 1
+                        },
+                    ],
+                    visualMap: {
+                        top: 50,
+                        right: -15,
+                        pieces: [
+                            {
+                                gt: 0.,
+                                lte: 5.,
+                                color: '#93CE07'
+                            },
+                            {
+                                gt: -5.,
+                                lte: 0.,
+                                color: '#FBDB0F'
+                            },
+                            {
+                                gt: 5.,
+                                lte: 10.,
+                                color: '#FC7D02'
+                            },
+                            {
+                                gt: -10.,
+                                lte: -5.,
+                                color: '#FD0100'
+                            },
+                            {
+                                gt: 10.,
+                                lte: 20.,
+                                color: '#AA069F'
+                            },
+                            {
+                                gt: -20.,
+                                lte: -10.,
+                                color: '#AC3B2A'
+                            }
+                        ],
+                        outOfRange: {
+                            color: '#999'
+                        }
+                    },
+                    series: {
+                        name: 'W Loss',
+                        type: 'line',
+                        data: xDataArr_wloss,
+                        // markLine: {
+                        //     silent: true,
+                        //     lineStyle: {
+                        //         color: '#333'
+                        //     },
+                            // data: [
+                            //     {
+                            //         yAxis: 0.5
+                            //     },
+                            //     {
+                            //         yAxis: 1.
+                            //     },
+                            //     {
+                            //         yAxis: 1.5
+                            //     },
+                            //     {
+                            //         yAxis: 2.
+                            //     },
+                            //     {
+                            //         yAxis: 3.
+                            //     }
+                            // ]
+                        // }
+                    }
+                })
+            );
+        });
+    }
+
+</script>
+</body>
+</html>
